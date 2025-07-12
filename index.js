@@ -1,36 +1,8 @@
-
-let player;
-let isPlayerReady = false;
-
-// Функция инициализации YouTube плеера
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('youtube-player', {
-        height: '0',
-        width: '0',
-        videoId: '4sJKlDAeUgM', // ID вашего видео
-        playerVars: {
-            'autoplay': 0,
-            'controls': 0,
-            'loop': 1,
-            'playlist': '4sJKlDAeUgM' // Тот же ID для зацикливания
-        },
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-        }
-    });
-}
-
-function onPlayerReady(event) {
-    isPlayerReady = true;
-    player.setVolume(50); // Начальная громкость
-}
-
-function onPlayerStateChange(event) {
-    if (event.data === YT.PlayerState.ENDED) {
-        player.playVideo(); // Перезапуск видео после окончания
-    }
-}
+// Константы для управления анимацией
+const TITLE_ANIMATION = {
+    DELAY: 300,
+    PAUSE: 1000
+};
 
 // Анимация заголовка
 class TitleTyper {
@@ -75,79 +47,88 @@ class TitleTyper {
     }
 }
 
-// Инициализация всех компонентов
-document.addEventListener('DOMContentLoaded', () => {
-    // Инициализация заголовка
-    const titleTyper = new TitleTyper('ShainiDG', 300, 1000);
-    titleTyper.start();
+// Класс для управления аудио
+class AudioController {
+    constructor() {
+        this.audio = new Audio('audio/ichika Nito - I Miss You(extended) (Spotify Version).mp3');
+        this.audio.loop = true;
+        this.audio.volume = 0.5;
+        this.isMuted = true;
+        this.lastVolume = 50;
 
-    // Инициализация аудио контроля
-    const toggleButton = document.getElementById('toggleAudio');
-    const volumeSlider = document.getElementById('volumeSlider');
-    const icon = toggleButton.querySelector('i');
+        this.setupControls();
+    }
 
-    // Переменная для хранения предыдущего значения громкости
-    let lastVolume = volumeSlider.value;
-    let isMuted = true;
+    setupControls() {
+        this.toggleButton = document.getElementById('toggleAudio');
+        this.volumeSlider = document.getElementById('volumeSlider');
+        this.icon = this.toggleButton.querySelector('i');
 
-    // Функция для обновления иконки
-    const updateIcon = (volume) => {
-        if (volume === 0 || isMuted) {
-            icon.className = 'fa-solid fa-volume-xmark';
-        } else if (volume < 50) {
-            icon.className = 'fa-solid fa-volume-low';
+        this.toggleButton.addEventListener('click', () => this.toggleAudio());
+        this.volumeSlider.addEventListener('input', (e) => this.handleVolumeChange(e));
+
+        // Начальная настройка
+        this.updateSliderBackground();
+        this.updateIcon();
+    }
+
+    toggleAudio() {
+        if (this.isMuted) {
+            this.volumeSlider.value = this.lastVolume;
+            this.audio.play();
+            this.audio.volume = this.lastVolume / 100;
         } else {
-            icon.className = 'fa-solid fa-volume-high';
+            this.lastVolume = this.volumeSlider.value;
+            this.volumeSlider.value = 0;
+            this.audio.volume = 0;
+            this.audio.pause();
         }
-    };
+        this.isMuted = !this.isMuted;
+        this.updateSliderBackground();
+        this.updateIcon();
+    }
 
-    // Обработчик клика по кнопке
-    toggleButton.addEventListener('click', () => {
-        if (!isPlayerReady) return;
+    handleVolumeChange(event) {
+        const volume = parseInt(event.target.value);
+        this.audio.volume = volume / 100;
 
-        if (isMuted) {
-            volumeSlider.value = lastVolume;
-            player.playVideo();
-            player.setVolume(lastVolume);
-            isMuted = false;
-        } else {
-            lastVolume = volumeSlider.value;
-            volumeSlider.value = 0;
-            player.setVolume(0);
-            player.pauseVideo();
-            isMuted = true;
-        }
-
-        // Обновляем градиент после изменения значения
-        volumeSlider.style.background = `linear-gradient(to right, white ${volumeSlider.value}%, rgba(255, 255, 255, 0.3) ${volumeSlider.value}%)`;
-        updateIcon(parseInt(volumeSlider.value));
-    });
-
-    // Обработчик изменения громкости
-    volumeSlider.addEventListener('input', (e) => {
-        if (!isPlayerReady) return;
-
-        const volume = parseInt(e.target.value);
-        player.setVolume(volume);
-
-        if (volume > 0 && isMuted) {
-            player.playVideo();
-            isMuted = false;
+        if (volume > 0 && this.isMuted) {
+            this.audio.play();
+            this.isMuted = false;
         } else if (volume === 0) {
-            player.pauseVideo();
-            isMuted = true;
+            this.audio.pause();
+            this.isMuted = true;
         }
 
         if (volume > 0) {
-            lastVolume = volume;
+            this.lastVolume = volume;
         }
 
-        // Обновляем градиент
-        volumeSlider.style.background = `linear-gradient(to right, white ${volume}%, rgba(255, 255, 255, 0.3) ${volume}%)`;
-        updateIcon(volume);
-    });
+        this.updateSliderBackground();
+        this.updateIcon();
+    }
 
-    // Начальная настройка
-    volumeSlider.style.background = `linear-gradient(to right, white ${volumeSlider.value}%, rgba(255, 255, 255, 0.3) ${volumeSlider.value}%)`;
-    updateIcon(parseInt(volumeSlider.value));
+    updateSliderBackground() {
+        const value = this.volumeSlider.value;
+        this.volumeSlider.style.background = `linear-gradient(to right, white ${value}%, rgba(255, 255, 255, 0.3) ${value}%)`;
+    }
+
+    updateIcon() {
+        const volume = parseInt(this.volumeSlider.value);
+        if (volume === 0 || this.isMuted) {
+            this.icon.className = 'fa-solid fa-volume-xmark';
+        } else if (volume < 50) {
+            this.icon.className = 'fa-solid fa-volume-low';
+        } else {
+            this.icon.className = 'fa-solid fa-volume-high';
+        }
+    }
+}
+
+// Инициализация всех компонентов
+document.addEventListener('DOMContentLoaded', () => {
+    const titleTyper = new TitleTyper('ShainiDG', TITLE_ANIMATION.DELAY, TITLE_ANIMATION.PAUSE);
+    titleTyper.start();
+
+    new AudioController();
 });
