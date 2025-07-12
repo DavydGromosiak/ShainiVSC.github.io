@@ -1,3 +1,4 @@
+
 /* 🌐 Общие стили */
 body, html {
     margin: 0;
@@ -16,6 +17,7 @@ body, html {
     min-width: 100%;
     min-height: 100%;
     z-index: -2;
+    object-fit: cover;
 }
 
 /* 🌑 Затемнение поверх видео */
@@ -124,14 +126,27 @@ body, html {
     box-shadow: 0 0 15px #25a0ff;
     max-width: 400px;
     width: 90%;
+    backdrop-filter: blur(5px);
 }
 
 .profile-card img {
     width: 150px;
     border-radius: 50%;
     box-shadow: 0 0 15px #000000;
+    transition: transform 0.3s ease;
 }
 
+.profile-card img:hover {
+    transform: scale(1.05);
+}
+
+.profile-card h1 {
+    margin: 20px 0;
+    font-size: 2em;
+    text-shadow: 0 0 10px rgba(37, 160, 255, 0.5);
+}
+
+/* 🔗 Социальные ссылки */
 .social-links {
     margin-top: 20px;
 }
@@ -155,6 +170,7 @@ body, html {
     transform: scale(1.1);
 }
 
+/* 🎯 Тултип */
 .tooltip-container {
     position: relative;
     display: inline-block;
@@ -207,4 +223,106 @@ body, html {
 .tooltip-container:hover .tooltip {
     visibility: visible;
     opacity: 1;
+}
+
+/* 📱 Медиа-запросы для адаптивности */
+@media screen and (max-width: 768px) {
+    /* Стили для планшетов */
+    .profile-card {
+        padding: 40px;
+        max-width: 320px;
+    }
+
+    .profile-card img {
+        width: 120px;
+    }
+
+    .profile-card h1 {
+        font-size: 1.8em;
+    }
+
+    .social-links a {
+        font-size: 32px;
+        margin: 0 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* Стили для мобильных устройств */
+    .profile-card {
+        padding: 30px;
+        max-width: 280px;
+    }
+
+    .profile-card img {
+        width: 100px;
+    }
+
+    .profile-card h1 {
+        font-size: 1.5em;
+    }
+
+    .social-links a {
+        font-size: 28px;
+        margin: 0 8px;
+    }
+
+    /* Адаптация аудио-контроля */
+    .audio-controls {
+        padding: 10px;
+        top: 10px;
+        left: 10px;
+    }
+
+    .audio-controls:hover {
+        width: 134px;
+    }
+
+    .audio-controls button {
+        font-size: 20px;
+    }
+
+    #volumeSlider {
+        width: 80px;
+    }
+}
+
+/* 🌐 Поддержка режима экономии трафика */
+@media (prefers-reduced-data: reduce) {
+    #bg-video {
+        display: none;
+    }
+
+    body {
+        background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+    }
+}
+
+/* 🌙 Поддержка тёмной темы */
+@media (prefers-color-scheme: dark) {
+    .profile-card {
+        background: rgba(0,0,0,0.7);
+    }
+}
+
+/* 📱 Поддержка устройств с высоким DPI */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .profile-card {
+        box-shadow: 0 0 20px rgba(37, 160, 255, 0.8);
+    }
+
+    .profile-card h1 {
+        text-shadow: 0 0 15px rgba(37, 160, 255, 0.6);
+    }
+}
+
+/* 🔄 Анимации для hover-эффектов на тач-устройствах */
+@media (hover: hover) {
+    .profile-card img:hover {
+        transform: scale(1.05);
+    }
+
+    .social-links a:hover {
+        transform: scale(1.2);
+    }
 }
