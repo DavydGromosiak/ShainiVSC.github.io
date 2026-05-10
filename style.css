@@ -105,6 +105,7 @@ a {
 
 .social-links {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 12px;
     margin-top: 18px;
@@ -142,6 +143,16 @@ a {
 .social-link.github:hover {
     color: #ffffff;
     text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+}
+
+.social-link.instagram:hover {
+    color: #ff4f9a;
+    text-shadow: 0 0 14px rgba(255, 79, 154, 0.55);
+}
+
+.social-link.email:hover {
+    color: var(--cyan);
+    text-shadow: 0 0 14px rgba(115, 247, 255, 0.55);
 }
 
 .social-link:focus-visible,
@@ -276,8 +287,8 @@ a {
     }
 
     .social-link {
-        width: 46px;
-        height: 46px;
+        width: 44px;
+        height: 44px;
         font-size: 21px;
     }
 
@@ -297,13 +308,13 @@ a {
     }
 
     .social-links {
-        gap: 9px;
+        gap: 8px;
     }
 
     .social-link {
-        width: 42px;
-        height: 42px;
-        font-size: 20px;
+        width: 40px;
+        height: 40px;
+        font-size: 19px;
     }
 }
 
