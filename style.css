@@ -9,6 +9,7 @@
     --blue: #25a0ff;
     --cyan: #73f7ff;
     --violet: #8a7dff;
+    --deep-blue: rgba(5, 16, 38, 0.74);
     --shadow: rgba(0, 0, 0, 0.38);
 }
 
@@ -50,9 +51,9 @@ a {
     inset: 0;
     z-index: -2;
     background:
-        linear-gradient(180deg, rgba(5, 7, 12, 0.28), rgba(5, 7, 12, 0.76)),
-        radial-gradient(circle at 50% 42%, rgba(37, 160, 255, 0.18), transparent 34%),
-        rgba(0, 0, 0, 0.26);
+        linear-gradient(180deg, rgba(5, 16, 38, 0.16), rgba(5, 7, 12, 0.78)),
+        radial-gradient(circle at 50% 42%, rgba(37, 160, 255, 0.2), transparent 35%),
+        rgba(0, 0, 0, 0.22);
 }
 
 .page-shell {
@@ -68,10 +69,12 @@ a {
     padding: 34px;
     text-align: center;
     border: 1px solid var(--line);
-    border-radius: 8px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)), var(--panel);
-    box-shadow: 0 24px 80px var(--shadow), 0 0 34px rgba(37, 160, 255, 0.22);
-    backdrop-filter: blur(18px) saturate(130%);
+    border-radius: 18px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.04)),
+        var(--deep-blue);
+    box-shadow: 0 24px 80px var(--shadow), 0 0 38px rgba(37, 160, 255, 0.24);
+    backdrop-filter: blur(22px) saturate(140%);
     animation: card-in 520ms ease both;
 }
 
@@ -174,10 +177,64 @@ a {
 
 .social-link:focus-visible,
 .player-button:focus-visible,
-.soundcloud-link:focus-visible,
-#progressSlider:focus-visible {
+.spotify-link:focus-visible,
+#progressSlider:focus-visible,
+#volumeSlider:focus-visible {
     outline: 3px solid rgba(115, 247, 255, 0.88);
     outline-offset: 4px;
+}
+
+.volume-mixer {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 12;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 232px;
+    min-height: 58px;
+    padding: 14px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    background:
+        linear-gradient(135deg, rgba(37, 160, 255, 0.14), rgba(138, 125, 255, 0.1)),
+        rgba(8, 12, 20, 0.64);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.34), 0 0 24px rgba(37, 160, 255, 0.18);
+    backdrop-filter: blur(18px) saturate(130%);
+}
+
+.volume-mixer i {
+    flex: 0 0 auto;
+    width: 28px;
+    color: var(--text);
+    font-size: 28px;
+    text-shadow: 0 0 14px rgba(115, 247, 255, 0.46);
+}
+
+#volumeSlider {
+    width: 138px;
+    height: 8px;
+    margin: 0;
+    padding: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 999px;
+    background: linear-gradient(to right, #ffffff 55%, rgba(255, 255, 255, 0.24) 55%);
+    outline: none;
+}
+
+#volumeSlider::-webkit-slider-thumb {
+    width: 0;
+    height: 0;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+#volumeSlider::-moz-range-thumb {
+    width: 0;
+    height: 0;
+    border: 0;
 }
 
 .music-player {
@@ -194,9 +251,9 @@ a {
     align-items: center;
     gap: 18px;
     border: 1px solid var(--line);
-    border-radius: 8px;
+    border-radius: 18px;
     background:
-        linear-gradient(135deg, rgba(37, 160, 255, 0.18), rgba(255, 79, 154, 0.1)),
+        linear-gradient(135deg, rgba(37, 160, 255, 0.16), rgba(138, 125, 255, 0.11)),
         rgba(8, 12, 20, 0.78);
     box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42), 0 0 32px rgba(37, 160, 255, 0.18);
     backdrop-filter: blur(20px) saturate(130%);
@@ -207,7 +264,7 @@ a {
     flex: 0 0 76px;
     width: 76px;
     height: 76px;
-    border-radius: 8px;
+    border-radius: 12px;
     object-fit: cover;
     box-shadow: 0 14px 30px rgba(0, 0, 0, 0.34);
 }
@@ -238,21 +295,21 @@ a {
 }
 
 .track-title:hover,
-.soundcloud-link:hover {
+.spotify-link:hover {
     color: var(--cyan);
 }
 
-.soundcloud-link {
+.spotify-link {
     flex: 0 0 auto;
-    color: #ff6a22;
+    color: #1ed760;
     font-size: 21px;
     text-decoration: none;
     transition: color 180ms ease, transform 180ms ease;
 }
 
-.soundcloud-link:hover {
+.spotify-link:hover {
     transform: translateY(-1px);
-    text-shadow: 0 0 14px rgba(255, 106, 34, 0.52);
+    text-shadow: 0 0 14px rgba(30, 215, 96, 0.52);
 }
 
 .track-progress-row {
@@ -366,7 +423,23 @@ a {
 @media screen and (max-width: 640px) {
     .page-shell {
         align-items: center;
-        padding: 66px 14px 198px;
+        padding: 96px 14px 198px;
+    }
+
+    .volume-mixer {
+        top: 12px;
+        left: 12px;
+        width: 218px;
+        min-height: 54px;
+        padding: 12px 16px;
+    }
+
+    .volume-mixer i {
+        font-size: 25px;
+    }
+
+    #volumeSlider {
+        width: 128px;
     }
 
     .profile-card {
@@ -413,7 +486,7 @@ a {
         font-size: 15px;
     }
 
-    .soundcloud-link {
+    .spotify-link {
         font-size: 19px;
     }
 

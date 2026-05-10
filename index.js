@@ -56,6 +56,8 @@ class MusicPlayer {
         this.playButton = document.getElementById('toggleAudio');
         this.playIcon = this.playButton.querySelector('i');
         this.progressSlider = document.getElementById('progressSlider');
+        this.volumeSlider = document.getElementById('volumeSlider');
+        this.volumeIcon = document.getElementById('volumeIcon');
         this.currentTime = document.getElementById('currentTime');
         this.durationTime = document.getElementById('durationTime');
         this.skipBack = document.getElementById('skipBack');
@@ -69,6 +71,7 @@ class MusicPlayer {
         this.playButton.setAttribute('aria-pressed', 'false');
         this.playButton.addEventListener('click', () => this.togglePlayback());
         this.progressSlider.addEventListener('input', (event) => this.seek(event));
+        this.volumeSlider.addEventListener('input', (event) => this.changeVolume(event));
         this.skipBack.addEventListener('click', () => this.skip(-10));
         this.skipForward.addEventListener('click', () => this.skip(10));
 
@@ -76,6 +79,7 @@ class MusicPlayer {
         this.audio.addEventListener('timeupdate', () => this.updateProgress());
         this.audio.addEventListener('play', () => this.setPlaying(true));
         this.audio.addEventListener('pause', () => this.setPlaying(false));
+        this.updateVolumeUI();
     }
 
     async togglePlayback() {
@@ -109,6 +113,12 @@ class MusicPlayer {
         this.audio.currentTime = nextTime;
     }
 
+    changeVolume(event) {
+        const volume = Number(event.target.value);
+        this.audio.volume = volume / 100;
+        this.updateVolumeUI();
+    }
+
     updateDuration() {
         this.durationTime.textContent = this.formatTime(this.audio.duration);
     }
@@ -126,6 +136,19 @@ class MusicPlayer {
 
     updateProgressFill(value) {
         this.progressSlider.style.background = `linear-gradient(to right, #73f7ff ${value}%, rgba(255, 255, 255, 0.22) ${value}%)`;
+    }
+
+    updateVolumeUI() {
+        const volume = Number(this.volumeSlider.value);
+        this.volumeSlider.style.background = `linear-gradient(to right, #ffffff ${volume}%, rgba(255, 255, 255, 0.24) ${volume}%)`;
+
+        if (volume === 0) {
+            this.volumeIcon.className = 'fa-solid fa-volume-xmark';
+        } else if (volume < 50) {
+            this.volumeIcon.className = 'fa-solid fa-volume-low';
+        } else {
+            this.volumeIcon.className = 'fa-solid fa-volume-high';
+        }
     }
 
     formatTime(time) {
