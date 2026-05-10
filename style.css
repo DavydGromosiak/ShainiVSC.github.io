@@ -52,24 +52,20 @@ a {
     inset: 0;
     z-index: -2;
     background:
-        linear-gradient(180deg, rgba(5, 16, 38, 0.16), rgba(5, 7, 12, 0.78)),
-        radial-gradient(circle at 50% 42%, rgba(37, 160, 255, 0.2), transparent 35%),
-        rgba(0, 0, 0, 0.22);
+        linear-gradient(180deg, rgba(5, 16, 38, 0.2), rgba(5, 7, 12, 0.8)),
+        radial-gradient(circle at 50% 42%, rgba(37, 160, 255, 0.22), transparent 34%),
+        radial-gradient(circle at 50% 52%, rgba(0, 0, 0, 0.16), transparent 28%),
+        rgba(0, 0, 0, 0.24);
 }
 
 .particles {
     position: fixed;
     inset: 0;
     z-index: -1;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
-    background-image:
-        radial-gradient(circle, rgba(248, 251, 255, 0.72) 0 1px, transparent 1.6px),
-        radial-gradient(circle, rgba(115, 247, 255, 0.44) 0 1px, transparent 1.8px),
-        radial-gradient(circle, rgba(248, 251, 255, 0.34) 0 1px, transparent 1.5px);
-    background-position: 8% 18%, 82% 26%, 44% 72%;
-    background-size: 170px 170px, 230px 230px, 310px 310px;
-    opacity: 0.28;
-    animation: particles-drift 26s linear infinite;
+    opacity: 0.54;
 }
 
 .page-shell {
@@ -81,6 +77,8 @@ a {
 }
 
 .profile-card {
+    position: relative;
+    overflow: hidden;
     width: min(100%, 420px);
     padding: 32px 30px;
     text-align: center;
@@ -92,6 +90,22 @@ a {
     box-shadow: 0 22px 76px rgba(0, 0, 0, 0.34), 0 0 30px rgba(37, 160, 255, 0.18);
     backdrop-filter: blur(24px) saturate(135%);
     animation: card-in 520ms ease both;
+}
+
+.profile-card::before {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background:
+        radial-gradient(240px circle at var(--mx, 50%) var(--my, 12%), rgba(115, 247, 255, 0.14), transparent 42%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 42%);
+    opacity: 0.82;
+    pointer-events: none;
+    transition: opacity 220ms ease;
+}
+
+.profile-card > * {
+    position: relative;
 }
 
 .avatar-frame {
@@ -157,7 +171,7 @@ a {
     opacity: 0;
     pointer-events: none;
     transform: translate(-50%, 6px);
-    transition: opacity 160ms ease, transform 160ms ease;
+    transition: opacity 220ms ease, transform 220ms ease;
     white-space: nowrap;
 }
 
@@ -221,7 +235,7 @@ a {
     opacity: 0;
     pointer-events: none;
     transform: translate(-50%, 6px);
-    transition: opacity 160ms ease, transform 160ms ease;
+    transition: opacity 220ms ease, transform 220ms ease;
     white-space: nowrap;
 }
 
@@ -339,7 +353,7 @@ a {
     opacity: 0;
     pointer-events: none;
     transform: translate(-50%, 6px);
-    transition: opacity 160ms ease, transform 160ms ease;
+    transition: opacity 220ms ease, transform 220ms ease;
     white-space: nowrap;
 }
 
@@ -504,6 +518,13 @@ a {
     box-shadow: 0 22px 68px rgba(0, 0, 0, 0.38), 0 0 28px rgba(37, 160, 255, 0.14);
     backdrop-filter: blur(22px) saturate(130%);
     animation: player-in 620ms ease 120ms both;
+    transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.music-player:hover {
+    border-color: rgba(115, 247, 255, 0.26);
+    box-shadow: 0 24px 72px rgba(0, 0, 0, 0.42), 0 0 34px rgba(37, 160, 255, 0.2);
+    transform: translateY(-1px);
 }
 
 .track-cover {
@@ -666,16 +687,6 @@ a {
     }
 }
 
-@keyframes particles-drift {
-    from {
-        background-position: 8% 18%, 82% 26%, 44% 72%;
-    }
-
-    to {
-        background-position: 8% 110%, 82% 118%, 44% 138%;
-    }
-}
-
 @media screen and (max-width: 640px) {
     .page-shell {
         align-items: center;
@@ -741,7 +752,7 @@ a {
         bottom: 12px;
         left: 12px;
         width: calc(100% - 24px);
-        min-height: 136px;
+        min-height: 128px;
         padding: 14px;
         gap: 12px;
     }
@@ -767,9 +778,8 @@ a {
     }
 
     .player-actions {
-        position: absolute;
-        right: 14px;
-        bottom: 12px;
+        position: static;
+        margin-left: auto;
         gap: 8px;
     }
 
@@ -818,11 +828,19 @@ a {
     }
 
     .music-player {
-        min-height: 150px;
+        display: grid;
+        grid-template-columns: 52px 1fr;
+        min-height: 154px;
     }
 
     .track-main {
-        padding-bottom: 42px;
+        min-width: 0;
+        padding-bottom: 0;
+    }
+
+    .player-actions {
+        grid-column: 1 / -1;
+        justify-content: center;
     }
 }
 
@@ -876,6 +894,6 @@ a {
     }
 
     .particles {
-        animation: none;
+        display: none;
     }
 }

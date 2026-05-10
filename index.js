@@ -265,10 +265,111 @@ class EmailCopy {
     }
 }
 
+class AmbientParticles {
+    constructor() {
+        this.canvas = document.getElementById('particleCanvas');
+        this.context = this.canvas?.getContext('2d');
+        this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        this.particles = [];
+
+        if (!this.canvas || !this.context || this.reducedMotion) {
+            return;
+        }
+
+        this.resize();
+        this.createParticles();
+        window.addEventListener('resize', () => {
+            this.resize();
+            this.createParticles();
+        });
+        this.animate();
+    }
+
+    resize() {
+        this.pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.canvas.width = this.width * this.pixelRatio;
+        this.canvas.height = this.height * this.pixelRatio;
+        this.canvas.style.width = `${this.width}px`;
+        this.canvas.style.height = `${this.height}px`;
+        this.context.setTransform(this.pixelRatio, 0, 0, this.pixelRatio, 0, 0);
+    }
+
+    createParticles() {
+        const count = Math.min(Math.floor(this.width / 28), 64);
+        this.particles = Array.from({ length: count }, () => this.createParticle(true));
+    }
+
+    createParticle(randomY = false) {
+        const size = 0.8 + Math.random() * 1.8;
+
+        return {
+            x: Math.random() * this.width,
+            y: randomY ? Math.random() * this.height : this.height + 12,
+            size,
+            speed: 0.14 + Math.random() * 0.34,
+            drift: -0.12 + Math.random() * 0.24,
+            alpha: 0.28 + Math.random() * 0.48,
+            hue: Math.random() > 0.7 ? '115, 247, 255' : '248, 251, 255'
+        };
+    }
+
+    animate() {
+        this.context.clearRect(0, 0, this.width, this.height);
+
+        for (const particle of this.particles) {
+            particle.y -= particle.speed;
+            particle.x += particle.drift;
+
+            if (particle.y < -12 || particle.x < -24 || particle.x > this.width + 24) {
+                Object.assign(particle, this.createParticle(false));
+            }
+
+            this.context.beginPath();
+            this.context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            this.context.fillStyle = `rgba(${particle.hue}, ${particle.alpha})`;
+            this.context.shadowBlur = 10;
+            this.context.shadowColor = `rgba(${particle.hue}, 0.45)`;
+            this.context.fill();
+        }
+
+        window.requestAnimationFrame(() => this.animate());
+    }
+}
+
+class CardGlow {
+    constructor() {
+        this.card = document.querySelector('.profile-card');
+
+        if (!this.card) {
+            return;
+        }
+
+        this.card.addEventListener('pointermove', (event) => this.update(event));
+        this.card.addEventListener('pointerleave', () => this.reset());
+    }
+
+    update(event) {
+        const rect = this.card.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 100;
+        const y = ((event.clientY - rect.top) / rect.height) * 100;
+        this.card.style.setProperty('--mx', `${x}%`);
+        this.card.style.setProperty('--my', `${y}%`);
+    }
+
+    reset() {
+        this.card.style.setProperty('--mx', '50%');
+        this.card.style.setProperty('--my', '12%');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const titleTyper = new TitleTyper('Shaini', TITLE_ANIMATION.DELAY, TITLE_ANIMATION.PAUSE);
     titleTyper.start();
 
     new MusicPlayer();
     new EmailCopy();
+    new AmbientParticles();
+    new CardGlow();
 });
