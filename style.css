@@ -401,12 +401,28 @@ a {
         rgba(8, 12, 20, 0.72);
 }
 
-.volume-mixer i {
+.volume-toggle {
     flex: 0 0 auto;
     width: 28px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    background: transparent;
     color: var(--text);
     font-size: 28px;
+    line-height: 1;
     text-shadow: 0 0 14px rgba(115, 247, 255, 0.46);
+    cursor: pointer;
+}
+
+.volume-toggle i {
+    pointer-events: none;
+}
+
+.volume-toggle:focus-visible {
+    outline: 3px solid rgba(115, 247, 255, 0.88);
+    outline-offset: 6px;
+    border-radius: 8px;
 }
 
 #volumeSlider {
@@ -680,7 +696,7 @@ a {
         width: 218px;
     }
 
-    .volume-mixer i {
+    .volume-toggle {
         font-size: 25px;
     }
 

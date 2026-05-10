@@ -68,8 +68,10 @@ class MusicPlayer {
         this.trackTitle = document.getElementById('trackTitle');
         this.trackExternalLink = document.getElementById('trackExternalLink');
         this.progressSlider = document.getElementById('progressSlider');
+        this.muteButton = document.getElementById('toggleMute');
         this.volumeSlider = document.getElementById('volumeSlider');
         this.volumeIcon = document.getElementById('volumeIcon');
+        this.lastVolume = Number(this.volumeSlider.value);
         this.currentTime = document.getElementById('currentTime');
         this.durationTime = document.getElementById('durationTime');
         this.previousTrackButton = document.getElementById('previousTrack');
@@ -84,6 +86,7 @@ class MusicPlayer {
         this.playButton.setAttribute('aria-pressed', 'false');
         this.playButton.addEventListener('click', () => this.togglePlayback());
         this.progressSlider.addEventListener('input', (event) => this.seek(event));
+        this.muteButton.addEventListener('click', () => this.toggleMute());
         this.volumeSlider.addEventListener('input', (event) => this.changeVolume(event));
         this.previousTrackButton.addEventListener('click', () => this.changeTrack(-1));
         this.nextTrackButton.addEventListener('click', () => this.changeTrack(1));
@@ -150,6 +153,30 @@ class MusicPlayer {
     changeVolume(event) {
         const volume = Number(event.target.value);
         this.audio.volume = volume / 100;
+        this.audio.muted = volume === 0;
+
+        if (volume > 0) {
+            this.lastVolume = volume;
+        }
+
+        this.updateVolumeUI();
+    }
+
+    toggleMute() {
+        const currentVolume = Number(this.volumeSlider.value);
+
+        if (currentVolume > 0) {
+            this.lastVolume = currentVolume;
+            this.volumeSlider.value = '0';
+            this.audio.volume = 0;
+            this.audio.muted = true;
+        } else {
+            const restoredVolume = this.lastVolume > 0 ? this.lastVolume : 55;
+            this.volumeSlider.value = String(restoredVolume);
+            this.audio.volume = restoredVolume / 100;
+            this.audio.muted = false;
+        }
+
         this.updateVolumeUI();
     }
 
@@ -178,10 +205,16 @@ class MusicPlayer {
 
         if (volume === 0) {
             this.volumeIcon.className = 'fa-solid fa-volume-xmark';
+            this.muteButton.setAttribute('aria-label', 'Unmute music');
+            this.muteButton.setAttribute('aria-pressed', 'true');
         } else if (volume < 50) {
             this.volumeIcon.className = 'fa-solid fa-volume-low';
+            this.muteButton.setAttribute('aria-label', 'Mute music');
+            this.muteButton.setAttribute('aria-pressed', 'false');
         } else {
             this.volumeIcon.className = 'fa-solid fa-volume-high';
+            this.muteButton.setAttribute('aria-label', 'Mute music');
+            this.muteButton.setAttribute('aria-pressed', 'false');
         }
     }
 
