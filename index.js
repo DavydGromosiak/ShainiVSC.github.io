@@ -196,9 +196,46 @@ class MusicPlayer {
     }
 }
 
+class EmailCopy {
+    constructor() {
+        this.button = document.getElementById('copyEmail');
+        this.tooltip = document.getElementById('emailTooltip');
+        this.resetTimer = null;
+
+        if (!this.button || !this.tooltip) {
+            return;
+        }
+
+        this.button.addEventListener('click', () => this.copy());
+    }
+
+    async copy() {
+        const email = this.button.dataset.email;
+
+        try {
+            await navigator.clipboard.writeText(email);
+            this.showCopied();
+        } catch (error) {
+            window.location.href = `mailto:${email}`;
+        }
+    }
+
+    showCopied() {
+        window.clearTimeout(this.resetTimer);
+        this.tooltip.textContent = 'Copied';
+        this.button.classList.add('copied');
+
+        this.resetTimer = window.setTimeout(() => {
+            this.tooltip.textContent = 'Email';
+            this.button.classList.remove('copied');
+        }, 1600);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const titleTyper = new TitleTyper('Shaini', TITLE_ANIMATION.DELAY, TITLE_ANIMATION.PAUSE);
     titleTyper.start();
 
     new MusicPlayer();
+    new EmailCopy();
 });

@@ -57,6 +57,21 @@ a {
         rgba(0, 0, 0, 0.22);
 }
 
+.particles {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        radial-gradient(circle, rgba(248, 251, 255, 0.72) 0 1px, transparent 1.6px),
+        radial-gradient(circle, rgba(115, 247, 255, 0.44) 0 1px, transparent 1.8px),
+        radial-gradient(circle, rgba(248, 251, 255, 0.34) 0 1px, transparent 1.5px);
+    background-position: 8% 18%, 82% 26%, 44% 72%;
+    background-size: 170px 170px, 230px 230px, 310px 310px;
+    opacity: 0.28;
+    animation: particles-drift 26s linear infinite;
+}
+
 .page-shell {
     min-height: 100vh;
     min-height: 100dvh;
@@ -164,6 +179,7 @@ a {
 }
 
 .status-chip {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -177,6 +193,7 @@ a {
     font-weight: 500;
     line-height: 1;
     box-shadow: inset 0 0 18px rgba(37, 160, 255, 0.045);
+    cursor: default;
 }
 
 .status-dot {
@@ -185,6 +202,47 @@ a {
     border-radius: 50%;
     background: var(--cyan);
     box-shadow: 0 0 12px rgba(115, 247, 255, 0.9);
+}
+
+.status-tooltip,
+.social-tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    padding: 8px 13px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    background: rgba(24, 17, 38, 0.9);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3), 0 0 18px rgba(37, 160, 255, 0.14);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 6px);
+    transition: opacity 160ms ease, transform 160ms ease;
+    white-space: nowrap;
+}
+
+.status-tooltip::after,
+.social-tooltip::after {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    content: "";
+    background: rgba(24, 17, 38, 0.9);
+    transform: translate(-50%, -5px) rotate(45deg);
+}
+
+.status-chip:hover .status-tooltip,
+.status-chip:focus-visible .status-tooltip,
+.social-link:hover .social-tooltip,
+.social-link:focus-visible .social-tooltip {
+    opacity: 1;
+    transform: translate(-50%, 0);
 }
 
 .social-links {
@@ -196,6 +254,7 @@ a {
 }
 
 .social-link {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -207,6 +266,7 @@ a {
     color: var(--text);
     font-size: 22px;
     text-decoration: none;
+    cursor: pointer;
     transition: transform 180ms ease, background 180ms ease, color 180ms ease, box-shadow 180ms ease;
 }
 
@@ -237,6 +297,12 @@ a {
 .social-link.email:hover {
     color: var(--cyan);
     text-shadow: 0 0 14px rgba(115, 247, 255, 0.55);
+}
+
+.social-link.email.copied {
+    color: var(--cyan);
+    background: rgba(115, 247, 255, 0.12);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.26), 0 0 18px rgba(115, 247, 255, 0.18);
 }
 
 .view-count {
@@ -561,6 +627,16 @@ a {
     }
 }
 
+@keyframes particles-drift {
+    from {
+        background-position: 8% 18%, 82% 26%, 44% 72%;
+    }
+
+    to {
+        background-position: 8% 110%, 82% 118%, 44% 138%;
+    }
+}
+
 @media screen and (max-width: 640px) {
     .page-shell {
         align-items: center;
@@ -758,5 +834,9 @@ a {
         transition-duration: 0.01ms !important;
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
+    }
+
+    .particles {
+        animation: none;
     }
 }
