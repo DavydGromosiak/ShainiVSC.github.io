@@ -3,62 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#05070c">
 
-    <!-- Primary Meta Tags -->
     <title>ShainiDG</title>
     <meta name="title" content="ShainiDG">
     <meta name="description" content="Personal page of ShainiDG">
 
-    <!-- Favicon (GIF) -->
     <link rel="icon" type="image/gif" href="favicon/favicon.gif">
     <link rel="apple-touch-icon" href="favicon/favicon.gif">
     <link rel="shortcut icon" type="image/gif" href="favicon/favicon.gif">
 
-    <!-- Стили -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="index.js" defer></script>
 </head>
 <body>
-<!-- 🔹 Фоновое видео -->
-<video autoplay muted loop id="bg-video">
+<video autoplay muted loop playsinline id="bg-video" aria-hidden="true">
     <source src="videoclip/BackGround.mp4" type="video/mp4">
 </video>
 <div class="overlay"></div>
 
-<!-- 🔹 Аудио контроль -->
-<div class="audio-controls">
-    <button id="toggleAudio">
+<div class="audio-controls" aria-label="Audio controls">
+    <button id="toggleAudio" type="button" aria-label="Toggle music">
         <i class="fa-solid fa-volume-xmark"></i>
     </button>
     <div class="volume-slider-container">
-        <input type="range" id="volumeSlider" min="0" max="100" value="50">
+        <input type="range" id="volumeSlider" min="0" max="100" value="50" aria-label="Music volume">
     </div>
 </div>
 
-<!-- 🔹 Карточка профиля -->
-<div class="profile-card">
-    <!-- 🌟 Аватар -->
-    <img src="img/avatar.jpg" alt="ShainiDG avatar">
+<main class="page-shell">
+    <section class="profile-card" aria-label="ShainiDG profile">
+        <div class="avatar-frame">
+            <img src="img/avatar.jpg" alt="ShainiDG avatar">
+        </div>
 
-    <!-- 🌟 Name -->
-    <h1>𝚂𝚑𝚊𝚒𝚗𝚒♡</h1>
+        <p class="eyebrow">Personal page</p>
+        <h1>ShainiDG</h1>
+        <p class="tagline">My links, projects and creative space in one clean place.</p>
 
-    <!-- 🌟 social -->
-    <div class="social-links">
-        <a href="https://t.me/ShainiDG" target="_blank" rel="noopener noreferrer">
-            <i class="fa-brands fa-telegram"></i>
+        <a class="primary-link" href="https://github.com/DavydGromosiak" target="_blank" rel="noopener noreferrer">
+            <i class="fa-brands fa-github"></i>
+            <span>Open GitHub</span>
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
         </a>
-        <a href="https://discord.com/users/1229508026180833382" target="_blank" rel="noopener noreferrer">
-            <i class="fa-brands fa-discord"></i>
-        </a>
-        <div class="tooltip-container">
-            <a href="" target="_blank" rel="noopener noreferrer">
+
+        <div class="social-links" aria-label="Social links">
+            <a class="social-link telegram" href="https://t.me/ShainiDG" target="_blank" rel="noopener noreferrer"
+               aria-label="Open Telegram" title="Telegram">
+                <i class="fa-brands fa-telegram"></i>
+            </a>
+            <a class="social-link discord" href="https://discord.com/users/1229508026180833382" target="_blank"
+               rel="noopener noreferrer" aria-label="Open Discord" title="Discord">
+                <i class="fa-brands fa-discord"></i>
+            </a>
+            <a class="social-link github" href="https://github.com/DavydGromosiak" target="_blank"
+               rel="noopener noreferrer" aria-label="Open GitHub" title="GitHub">
                 <i class="fa-brands fa-github"></i>
             </a>
-            <div class="tooltip">Temporarily out of service</div>
         </div>
-    </div>
-</div>
+    </section>
+</main>
 </body>
 </html>

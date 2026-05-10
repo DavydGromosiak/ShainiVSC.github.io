@@ -63,6 +63,7 @@ class AudioController {
         this.toggleButton = document.getElementById('toggleAudio');
         this.volumeSlider = document.getElementById('volumeSlider');
         this.icon = this.toggleButton.querySelector('i');
+        this.toggleButton.setAttribute('aria-pressed', 'false');
 
         this.toggleButton.addEventListener('click', () => this.toggleAudio());
         this.volumeSlider.addEventListener('input', (e) => this.handleVolumeChange(e));
@@ -110,11 +111,13 @@ class AudioController {
 
     updateSliderBackground() {
         const value = this.volumeSlider.value;
-        this.volumeSlider.style.background = `linear-gradient(to right, white ${value}%, rgba(255, 255, 255, 0.3) ${value}%)`;
+        this.volumeSlider.style.background = `linear-gradient(to right, #73f7ff ${value}%, rgba(255, 255, 255, 0.28) ${value}%)`;
     }
 
     updateIcon() {
         const volume = parseInt(this.volumeSlider.value);
+        this.toggleButton.setAttribute('aria-pressed', String(!this.isMuted && volume > 0));
+
         if (volume === 0 || this.isMuted) {
             this.icon.className = 'fa-solid fa-volume-xmark';
         } else if (volume < 50) {
