@@ -3,6 +3,15 @@ const TITLE_ANIMATION = {
     PAUSE: 1000
 };
 
+const PLAYLIST = [
+    {
+        title: 'i miss you',
+        audio: 'audio/ichika Nito - I Miss You(extended) (Spotify Version).mp3',
+        cover: 'img/track-cover.jpg',
+        link: 'https://open.spotify.com/track/021sNzTndU8LVmDJDqvwXp?si=5535235871bc4bc9'
+    }
+];
+
 class TitleTyper {
     constructor(fullTitle, delay = 200, pauseBeforeRestart = 2000) {
         this.fullTitle = fullTitle;
@@ -48,22 +57,26 @@ class TitleTyper {
 
 class MusicPlayer {
     constructor() {
-        this.audio = new Audio('audio/ichika Nito - I Miss You(extended) (Spotify Version).mp3');
+        this.currentTrackIndex = 0;
+        this.audio = new Audio();
         this.audio.volume = 0.55;
-        this.audio.loop = true;
         this.isPlaying = false;
 
         this.playButton = document.getElementById('toggleAudio');
         this.playIcon = this.playButton.querySelector('i');
+        this.trackCover = document.getElementById('trackCover');
+        this.trackTitle = document.getElementById('trackTitle');
+        this.trackExternalLink = document.getElementById('trackExternalLink');
         this.progressSlider = document.getElementById('progressSlider');
         this.volumeSlider = document.getElementById('volumeSlider');
         this.volumeIcon = document.getElementById('volumeIcon');
         this.currentTime = document.getElementById('currentTime');
         this.durationTime = document.getElementById('durationTime');
-        this.skipBack = document.getElementById('skipBack');
-        this.skipForward = document.getElementById('skipForward');
+        this.previousTrackButton = document.getElementById('previousTrack');
+        this.nextTrackButton = document.getElementById('nextTrack');
 
         this.setupControls();
+        this.loadTrack(0);
         this.updateProgressFill(0);
     }
 
@@ -72,14 +85,32 @@ class MusicPlayer {
         this.playButton.addEventListener('click', () => this.togglePlayback());
         this.progressSlider.addEventListener('input', (event) => this.seek(event));
         this.volumeSlider.addEventListener('input', (event) => this.changeVolume(event));
-        this.skipBack.addEventListener('click', () => this.skip(-10));
-        this.skipForward.addEventListener('click', () => this.skip(10));
+        this.previousTrackButton.addEventListener('click', () => this.changeTrack(-1));
+        this.nextTrackButton.addEventListener('click', () => this.changeTrack(1));
 
         this.audio.addEventListener('loadedmetadata', () => this.updateDuration());
         this.audio.addEventListener('timeupdate', () => this.updateProgress());
         this.audio.addEventListener('play', () => this.setPlaying(true));
         this.audio.addEventListener('pause', () => this.setPlaying(false));
+        this.audio.addEventListener('ended', () => this.changeTrack(1, true));
         this.updateVolumeUI();
+    }
+
+    loadTrack(index) {
+        const track = PLAYLIST[index];
+        this.currentTrackIndex = index;
+        this.audio.src = track.audio;
+        this.audio.load();
+
+        this.trackCover.src = track.cover;
+        this.trackCover.alt = `${track.title} cover`;
+        this.trackTitle.textContent = track.title;
+        this.trackTitle.href = track.link;
+        this.trackExternalLink.href = track.link;
+        this.currentTime.textContent = '0:00';
+        this.durationTime.textContent = '0:00';
+        this.progressSlider.value = '0';
+        this.updateProgressFill(0);
     }
 
     async togglePlayback() {
@@ -107,10 +138,13 @@ class MusicPlayer {
         this.updateProgressFill(percentage);
     }
 
-    skip(seconds) {
-        const duration = Number.isFinite(this.audio.duration) ? this.audio.duration : 0;
-        const nextTime = Math.min(Math.max(this.audio.currentTime + seconds, 0), duration);
-        this.audio.currentTime = nextTime;
+    async changeTrack(direction, autoplay = this.isPlaying) {
+        const nextIndex = (this.currentTrackIndex + direction + PLAYLIST.length) % PLAYLIST.length;
+        this.loadTrack(nextIndex);
+
+        if (autoplay) {
+            await this.audio.play();
+        }
     }
 
     changeVolume(event) {
@@ -163,7 +197,7 @@ class MusicPlayer {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const titleTyper = new TitleTyper('ShainiDG', TITLE_ANIMATION.DELAY, TITLE_ANIMATION.PAUSE);
+    const titleTyper = new TitleTyper('Shaini', TITLE_ANIMATION.DELAY, TITLE_ANIMATION.PAUSE);
     titleTyper.start();
 
     new MusicPlayer();

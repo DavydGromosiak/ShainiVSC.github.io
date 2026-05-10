@@ -176,6 +176,22 @@ a {
     text-shadow: 0 0 14px rgba(115, 247, 255, 0.55);
 }
 
+.view-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 18px;
+    color: rgba(248, 251, 255, 0.78);
+    font-size: 15px;
+    font-weight: 500;
+    text-shadow: 0 0 12px rgba(37, 160, 255, 0.24);
+}
+
+.view-count i {
+    color: rgba(248, 251, 255, 0.9);
+    font-size: 16px;
+}
+
 .social-link:focus-visible,
 .player-button:focus-visible,
 .spotify-link:focus-visible,
@@ -495,6 +511,10 @@ a {
         font-size: 21px;
     }
 
+    .view-count {
+        font-size: 14px;
+    }
+
     .music-player {
         right: 12px;
         bottom: 12px;
@@ -566,6 +586,10 @@ a {
         width: 40px;
         height: 40px;
         font-size: 19px;
+    }
+
+    .view-count {
+        font-size: 13px;
     }
 
     .music-player {
