@@ -1,10 +1,8 @@
-// Константы для управления анимацией
 const TITLE_ANIMATION = {
     DELAY: 300,
     PAUSE: 1000
 };
 
-// Анимация заголовка
 class TitleTyper {
     constructor(fullTitle, delay = 200, pauseBeforeRestart = 2000) {
         this.fullTitle = fullTitle;
@@ -32,106 +30,118 @@ class TitleTyper {
                     this.animate();
                 }, this.pauseBeforeRestart);
             }
+            return;
+        }
+
+        if (this.currentIndex > 0) {
+            this.currentIndex--;
+            this.currentText = this.fullTitle.substring(0, this.currentIndex);
+            document.title = this.currentText;
+            setTimeout(() => this.animate(), this.delay);
         } else {
-            if (this.currentIndex > 0) {
-                this.currentIndex--;
-                this.currentText = this.fullTitle.substring(0, this.currentIndex);
-                document.title = this.currentText;
-                setTimeout(() => this.animate(), this.delay);
-            } else {
-                this.isErasing = false;
-                this.currentText = '';
-                setTimeout(() => this.animate(), this.delay);
-            }
+            this.isErasing = false;
+            this.currentText = '';
+            setTimeout(() => this.animate(), this.delay);
         }
     }
 }
 
-// Класс для управления аудио
-class AudioController {
+class MusicPlayer {
     constructor() {
         this.audio = new Audio('audio/ichika Nito - I Miss You(extended) (Spotify Version).mp3');
+        this.audio.volume = 0.55;
         this.audio.loop = true;
-        this.audio.volume = 0.5;
-        this.isMuted = true;
-        this.lastVolume = 50;
+        this.isPlaying = false;
+
+        this.playButton = document.getElementById('toggleAudio');
+        this.playIcon = this.playButton.querySelector('i');
+        this.progressSlider = document.getElementById('progressSlider');
+        this.currentTime = document.getElementById('currentTime');
+        this.durationTime = document.getElementById('durationTime');
+        this.skipBack = document.getElementById('skipBack');
+        this.skipForward = document.getElementById('skipForward');
 
         this.setupControls();
+        this.updateProgressFill(0);
     }
 
     setupControls() {
-        this.toggleButton = document.getElementById('toggleAudio');
-        this.volumeSlider = document.getElementById('volumeSlider');
-        this.icon = this.toggleButton.querySelector('i');
-        this.toggleButton.setAttribute('aria-pressed', 'false');
+        this.playButton.setAttribute('aria-pressed', 'false');
+        this.playButton.addEventListener('click', () => this.togglePlayback());
+        this.progressSlider.addEventListener('input', (event) => this.seek(event));
+        this.skipBack.addEventListener('click', () => this.skip(-10));
+        this.skipForward.addEventListener('click', () => this.skip(10));
 
-        this.toggleButton.addEventListener('click', () => this.toggleAudio());
-        this.volumeSlider.addEventListener('input', (e) => this.handleVolumeChange(e));
-
-        // Начальная настройка
-        this.updateSliderBackground();
-        this.updateIcon();
+        this.audio.addEventListener('loadedmetadata', () => this.updateDuration());
+        this.audio.addEventListener('timeupdate', () => this.updateProgress());
+        this.audio.addEventListener('play', () => this.setPlaying(true));
+        this.audio.addEventListener('pause', () => this.setPlaying(false));
     }
 
-    toggleAudio() {
-        if (this.isMuted) {
-            this.volumeSlider.value = this.lastVolume;
-            this.audio.play();
-            this.audio.volume = this.lastVolume / 100;
+    async togglePlayback() {
+        if (this.audio.paused) {
+            await this.audio.play();
         } else {
-            this.lastVolume = this.volumeSlider.value;
-            this.volumeSlider.value = 0;
-            this.audio.volume = 0;
             this.audio.pause();
         }
-        this.isMuted = !this.isMuted;
-        this.updateSliderBackground();
-        this.updateIcon();
     }
 
-    handleVolumeChange(event) {
-        const volume = parseInt(event.target.value);
-        this.audio.volume = volume / 100;
-
-        if (volume > 0 && this.isMuted) {
-            this.audio.play();
-            this.isMuted = false;
-        } else if (volume === 0) {
-            this.audio.pause();
-            this.isMuted = true;
-        }
-
-        if (volume > 0) {
-            this.lastVolume = volume;
-        }
-
-        this.updateSliderBackground();
-        this.updateIcon();
+    setPlaying(isPlaying) {
+        this.isPlaying = isPlaying;
+        this.playButton.setAttribute('aria-pressed', String(isPlaying));
+        this.playButton.setAttribute('aria-label', isPlaying ? 'Pause music' : 'Play music');
+        this.playIcon.className = isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
     }
 
-    updateSliderBackground() {
-        const value = this.volumeSlider.value;
-        this.volumeSlider.style.background = `linear-gradient(to right, #73f7ff ${value}%, rgba(255, 255, 255, 0.28) ${value}%)`;
+    seek(event) {
+        if (!Number.isFinite(this.audio.duration)) {
+            return;
+        }
+
+        const percentage = Number(event.target.value);
+        this.audio.currentTime = (percentage / 100) * this.audio.duration;
+        this.updateProgressFill(percentage);
     }
 
-    updateIcon() {
-        const volume = parseInt(this.volumeSlider.value);
-        this.toggleButton.setAttribute('aria-pressed', String(!this.isMuted && volume > 0));
+    skip(seconds) {
+        const duration = Number.isFinite(this.audio.duration) ? this.audio.duration : 0;
+        const nextTime = Math.min(Math.max(this.audio.currentTime + seconds, 0), duration);
+        this.audio.currentTime = nextTime;
+    }
 
-        if (volume === 0 || this.isMuted) {
-            this.icon.className = 'fa-solid fa-volume-xmark';
-        } else if (volume < 50) {
-            this.icon.className = 'fa-solid fa-volume-low';
-        } else {
-            this.icon.className = 'fa-solid fa-volume-high';
+    updateDuration() {
+        this.durationTime.textContent = this.formatTime(this.audio.duration);
+    }
+
+    updateProgress() {
+        if (!Number.isFinite(this.audio.duration) || this.audio.duration === 0) {
+            return;
         }
+
+        const percentage = (this.audio.currentTime / this.audio.duration) * 100;
+        this.progressSlider.value = String(percentage);
+        this.currentTime.textContent = this.formatTime(this.audio.currentTime);
+        this.updateProgressFill(percentage);
+    }
+
+    updateProgressFill(value) {
+        this.progressSlider.style.background = `linear-gradient(to right, #73f7ff ${value}%, rgba(255, 255, 255, 0.22) ${value}%)`;
+    }
+
+    formatTime(time) {
+        if (!Number.isFinite(time)) {
+            return '0:00';
+        }
+
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60).toString().padStart(2, '0');
+        return `${minutes}:${seconds}`;
     }
 }
 
-// Инициализация всех компонентов
 document.addEventListener('DOMContentLoaded', () => {
     const titleTyper = new TitleTyper('ShainiDG', TITLE_ANIMATION.DELAY, TITLE_ANIMATION.PAUSE);
     titleTyper.start();
 
-    new AudioController();
+    new MusicPlayer();
 });

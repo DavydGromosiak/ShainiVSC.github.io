@@ -60,7 +60,7 @@ a {
     min-height: 100dvh;
     display: grid;
     place-items: center;
-    padding: 88px 20px 32px;
+    padding: 72px 20px 164px;
 }
 
 .profile-card {
@@ -156,83 +156,111 @@ a {
 }
 
 .social-link:focus-visible,
-.audio-controls button:focus-visible,
-#volumeSlider:focus-visible {
+.player-button:focus-visible,
+.soundcloud-link:focus-visible,
+#progressSlider:focus-visible {
     outline: 3px solid rgba(115, 247, 255, 0.88);
     outline-offset: 4px;
 }
 
-.audio-controls {
+.music-player {
     position: fixed;
-    top: 18px;
-    left: 18px;
+    right: 20px;
+    bottom: 20px;
+    left: 20px;
     z-index: 10;
+    width: min(100% - 40px, 820px);
+    min-height: 112px;
+    margin: 0 auto;
+    padding: 18px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    width: 48px;
-    min-height: 48px;
-    padding: 10px;
-    overflow: hidden;
+    gap: 18px;
     border: 1px solid var(--line);
     border-radius: 8px;
-    background: var(--panel-strong);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(14px);
-    transition: width 200ms ease, border-color 200ms ease;
+    background:
+        linear-gradient(135deg, rgba(37, 160, 255, 0.18), rgba(255, 79, 154, 0.1)),
+        rgba(8, 12, 20, 0.78);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42), 0 0 32px rgba(37, 160, 255, 0.18);
+    backdrop-filter: blur(20px) saturate(130%);
+    animation: player-in 620ms ease 120ms both;
 }
 
-.audio-controls:hover,
-.audio-controls:focus-within {
-    width: 174px;
-    border-color: rgba(115, 247, 255, 0.56);
+.track-cover {
+    flex: 0 0 76px;
+    width: 76px;
+    height: 76px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.34);
 }
 
-.audio-controls button {
-    flex: 0 0 26px;
-    width: 26px;
-    height: 26px;
-    padding: 0;
-    border: 0;
-    background: transparent;
+.track-main {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.track-topline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.track-title {
+    min-width: 0;
+    overflow: hidden;
     color: var(--text);
-    font-size: 21px;
-    line-height: 1;
-    cursor: pointer;
-    transition: color 180ms ease, text-shadow 180ms ease;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.25;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: 0 0 14px rgba(37, 160, 255, 0.36);
 }
 
-.audio-controls button:hover {
+.track-title:hover,
+.soundcloud-link:hover {
     color: var(--cyan);
-    text-shadow: 0 0 12px rgba(115, 247, 255, 0.7);
 }
 
-.volume-slider-container {
-    width: 104px;
-    opacity: 0;
-    transform: translateX(-6px);
-    transition: opacity 200ms ease, transform 200ms ease;
+.soundcloud-link {
+    flex: 0 0 auto;
+    color: #ff6a22;
+    font-size: 21px;
+    text-decoration: none;
+    transition: color 180ms ease, transform 180ms ease;
 }
 
-.audio-controls:hover .volume-slider-container,
-.audio-controls:focus-within .volume-slider-container {
-    opacity: 1;
-    transform: translateX(0);
+.soundcloud-link:hover {
+    transform: translateY(-1px);
+    text-shadow: 0 0 14px rgba(255, 106, 34, 0.52);
 }
 
-#volumeSlider {
-    width: 104px;
+.track-progress-row {
+    display: grid;
+    grid-template-columns: 42px minmax(80px, 1fr) 42px;
+    align-items: center;
+    gap: 10px;
+    color: rgba(248, 251, 255, 0.86);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+#progressSlider {
+    width: 100%;
     height: 6px;
     margin: 0;
     padding: 0;
     appearance: none;
     -webkit-appearance: none;
     border-radius: 999px;
-    background: linear-gradient(to right, #ffffff 50%, rgba(255, 255, 255, 0.28) 50%);
+    background: linear-gradient(to right, var(--cyan) 0%, rgba(255, 255, 255, 0.22) 0%);
     outline: none;
 }
 
-#volumeSlider::-webkit-slider-thumb {
+#progressSlider::-webkit-slider-thumb {
     width: 16px;
     height: 16px;
     appearance: none;
@@ -244,7 +272,7 @@ a {
     box-shadow: 0 0 12px rgba(37, 160, 255, 0.78);
 }
 
-#volumeSlider::-moz-range-thumb {
+#progressSlider::-moz-range-thumb {
     width: 16px;
     height: 16px;
     border: 2px solid rgba(255, 255, 255, 0.85);
@@ -252,6 +280,46 @@ a {
     background: var(--blue);
     cursor: pointer;
     box-shadow: 0 0 12px rgba(37, 160, 255, 0.78);
+}
+
+.player-actions {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.player-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 50%;
+    color: var(--text);
+    cursor: pointer;
+    transition: transform 180ms ease, background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.player-button.secondary {
+    width: 42px;
+    height: 42px;
+    background: transparent;
+    color: rgba(248, 251, 255, 0.7);
+    font-size: 20px;
+}
+
+.player-button.primary {
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 0 0 1px var(--line), 0 12px 28px rgba(0, 0, 0, 0.25);
+    font-size: 22px;
+}
+
+.player-button:hover {
+    transform: translateY(-2px);
+    color: var(--cyan);
+    background: rgba(255, 255, 255, 0.18);
 }
 
 @keyframes card-in {
@@ -266,10 +334,22 @@ a {
     }
 }
 
+@keyframes player-in {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media screen and (max-width: 640px) {
     .page-shell {
         align-items: center;
-        padding: 78px 14px 22px;
+        padding: 66px 14px 198px;
     }
 
     .profile-card {
@@ -292,9 +372,53 @@ a {
         font-size: 21px;
     }
 
-    .audio-controls {
-        top: 12px;
+    .music-player {
+        right: 12px;
+        bottom: 12px;
         left: 12px;
+        width: calc(100% - 24px);
+        min-height: 136px;
+        padding: 14px;
+        gap: 12px;
+    }
+
+    .track-cover {
+        width: 58px;
+        height: 58px;
+        flex-basis: 58px;
+    }
+
+    .track-title {
+        font-size: 15px;
+    }
+
+    .soundcloud-link {
+        font-size: 19px;
+    }
+
+    .track-progress-row {
+        grid-template-columns: 34px minmax(60px, 1fr) 34px;
+        gap: 8px;
+        font-size: 12px;
+    }
+
+    .player-actions {
+        position: absolute;
+        right: 14px;
+        bottom: 12px;
+        gap: 8px;
+    }
+
+    .player-button.secondary {
+        width: 36px;
+        height: 36px;
+        font-size: 17px;
+    }
+
+    .player-button.primary {
+        width: 48px;
+        height: 48px;
+        font-size: 19px;
     }
 }
 
@@ -316,12 +440,20 @@ a {
         height: 40px;
         font-size: 19px;
     }
+
+    .music-player {
+        min-height: 150px;
+    }
+
+    .track-main {
+        padding-bottom: 42px;
+    }
 }
 
 @media screen and (max-height: 620px) and (orientation: landscape) {
     .page-shell {
         padding-top: 24px;
-        padding-bottom: 24px;
+        padding-bottom: 128px;
     }
 
     .profile-card {
