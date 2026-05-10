@@ -103,12 +103,29 @@ a {
     text-shadow: 0 0 20px rgba(37, 160, 255, 0.42);
 }
 
+.location {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 14px 0 0;
+    color: rgba(248, 251, 255, 0.9);
+    font-size: 16px;
+    font-weight: 700;
+    text-shadow: 0 0 14px rgba(37, 160, 255, 0.28);
+}
+
+.location i {
+    color: var(--cyan);
+    font-size: 15px;
+}
+
 .social-links {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 12px;
-    margin-top: 18px;
+    margin-top: 20px;
 }
 
 .social-link {
@@ -366,6 +383,10 @@ a {
         font-size: 34px;
     }
 
+    .location {
+        font-size: 14px;
+    }
+
     .social-link {
         width: 44px;
         height: 44px;
@@ -429,6 +450,10 @@ a {
 
     .profile-card h1 {
         font-size: 30px;
+    }
+
+    .location {
+        font-size: 13px;
     }
 
     .social-links {
